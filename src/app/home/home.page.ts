@@ -1,4 +1,5 @@
-import { GetAllTasksByUser } from './../tasks/business-rules/getall-tasks-by-user';
+import { LogoutHandler } from './../account/business-rules/logout-handler';
+import { GetAllTasksByUserHandler } from '../tasks/business-rules/getall-tasks-by-user-handler';
 import { LoadingController } from '@ionic/angular';
 import { User } from './../account/models/user';
 import { CurrentUserService } from './../account/business-rules/current-user.service';
@@ -13,26 +14,39 @@ import { Task } from '../tasks/models/task';
 })
 export class HomePage {
   user: User;
-  tasks: Observable<Task[]>;
+  tasks$: Observable<Task[]>;
 
   constructor(
     private loading: LoadingController,
     private currentUser: CurrentUserService,
-    private getAllTasksByUser: GetAllTasksByUser
+    private getAllTasksByUser: GetAllTasksByUserHandler,
+    private logoutHandler: LogoutHandler
   ) {}
 
   async ionViewDidEnter(): Promise<void> {
+    if (!this.user) {
+      await this.loadCurrentUser();
+    }
+    if (!this.tasks$) {
+      this.tasks$ = this.getAllTasksByUser.execute(this.user.uid);
+    }
+  }
+
+  async loadCurrentUser() {
     const loading = await this.loading.create({
       message: 'Aguarde...',
     });
     loading.present();
     try {
       this.user = await this.currentUser.getCurrentUser();
-      this.tasks = this.getAllTasksByUser.execute(this.user.uid);
     } catch (error) {
       console.error('Ocorreu um erro ao buscar os dados do usuário');
     } finally {
       loading.dismiss();
     }
+  }
+
+  async logout() {
+    this.logoutHandler.execute();
   }
 }

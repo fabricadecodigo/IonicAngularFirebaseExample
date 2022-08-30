@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { Router } from '@angular/router';
+import { LoadingController } from '@ionic/angular';
+import { ToastService } from '../../helpers';
 import { UserRepository } from '../repositories/user-repository';
 import { CurrentUserService } from './current-user.service';
 
@@ -9,29 +11,45 @@ import { CurrentUserService } from './current-user.service';
 })
 export class LoginHandler {
   constructor(
+    private router: Router,
     private auth: AngularFireAuth,
-    private userRepository: UserRepository,
-    private currentUserService: CurrentUserService
+    private loading: LoadingController,
+    private toast: ToastService,
+    private currentUserService: CurrentUserService,
+    private userRepository: UserRepository
   ) {}
 
   async execute(email: string, password: string): Promise<void> {
+    const loading = await this.loading.create({
+      message: 'Aguarde...',
+    });
+    loading.present();
     try {
-      const authResponse = await this.auth.signInWithEmailAndPassword(
-        email,
-        password
-      );
+      await this.login(email, password);
 
-      if (authResponse.user) {
-        const name = await this.userRepository.getName(authResponse.user.uid);
-
-        this.currentUserService.setCurrentUser(
-          authResponse.user.uid,
-          name,
-          email
-        );
-      }
+      await this.toast.showSuccess('Login efetuado com sucesso');
+      this.router.navigate(['/']);
     } catch (error) {
-      throw new Error('Erro ao efetuar login');
+      await this.toast.showError('Usuário/senha inválido(s)');
+    } finally {
+      loading.dismiss();
+    }
+  }
+
+  private async login(email: string, password: string) {
+    const authResponse = await this.auth.signInWithEmailAndPassword(
+      email,
+      password
+    );
+
+    if (authResponse.user) {
+      const name = await this.userRepository.getName(authResponse.user.uid);
+
+      this.currentUserService.setCurrentUser(
+        authResponse.user.uid,
+        name,
+        email
+      );
     }
   }
 }

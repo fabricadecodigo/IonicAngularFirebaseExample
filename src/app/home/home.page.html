@@ -1,6 +1,11 @@
 <ion-header>
   <ion-toolbar>
     <ion-title>Home</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="logout()">
+        <ion-icon slot="icon-only" name="log-out-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -8,8 +13,8 @@
   <h1 class="ion-text-center" *ngIf="user">Olá {{ user?.name }}</h1>
 
   <ion-list>
-    <ion-item *ngFor="let task of tasks | async">
-      <ion-label>
+    <ion-item *ngFor="let task of tasks$ | async">
+      <ion-label routerLink="/tasks/edit/{{ task.id }}">
         <h2>{{task.title}}</h2>
         <p>{{task.description}}</p>
         <ion-text *ngIf="task.done" color="success">Completa</ion-text>
@@ -19,7 +24,7 @@
   </ion-list>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button>
+    <ion-fab-button routerLink="/tasks/new">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>

@@ -14,12 +14,20 @@ export class CurrentUserService {
     private userRepository: UserRepository
   ) {}
 
+  hasUser(): boolean {
+    return this.currentUser ? true : false;
+  }
+
   setCurrentUser(uid: string, name: string, email: string) {
     this.currentUser = {
       uid,
       name,
       email,
     };
+  }
+
+  clearCurrentUser() {
+    this.currentUser = undefined;
   }
 
   getCurrentUser(): Promise<User> {
