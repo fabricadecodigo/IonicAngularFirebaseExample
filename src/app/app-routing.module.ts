@@ -8,13 +8,6 @@ const redirectUnauthorizedToLogin = () => redirectUnauthorizedTo(['login']);
 
 const routes: Routes = [
   {
-    path: 'home',
-    loadChildren: () =>
-      import('./home/home.module').then((m) => m.HomePageModule),
-    canActivate: [AngularFireAuthGuard],
-    data: { authGuardPipe: redirectUnauthorizedToLogin },
-  },
-  {
     path: 'login',
     loadChildren: () =>
       import('./account/pages/login-page/login-page.module').then(
@@ -29,22 +22,18 @@ const routes: Routes = [
       ).then((m) => m.CreateAccountPagePageModule),
   },
   {
-    path: 'login-page',
-    loadChildren: () =>
-      import('./account/pages/login-page/login-page.module').then(
-        (m) => m.LoginPagePageModule
-      ),
-  },
-  {
-    path: 'create-account-page',
-    loadChildren: () =>
-      import(
-        './account/pages/create-account-page/create-account-page.module'
-      ).then((m) => m.CreateAccountPagePageModule),
-  },
-  {
     path: 'tasks',
+    data: { authGuardPipe: redirectUnauthorizedToLogin },
     children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('./tasks/pages/task-list/task-list.module').then(
+            (m) => m.TaskListPageModule
+          ),
+        canActivate: [AngularFireAuthGuard],
+        data: { authGuardPipe: redirectUnauthorizedToLogin },
+      },
       {
         path: 'new',
         loadChildren: () =>
@@ -63,7 +52,7 @@ const routes: Routes = [
   },
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'tasks',
     pathMatch: 'full',
   },
 ];

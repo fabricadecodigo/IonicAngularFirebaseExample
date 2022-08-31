@@ -41,7 +41,7 @@ export class LoginHandler {
       }
 
       await this.toast.showSuccess('Login efetuado com sucesso');
-      this.router.navigate(['/']);
+      this.router.navigate(['/tasks']);
     } catch (error) {
       await this.toast.showError('Usuário/senha inválido(s)');
     } finally {
