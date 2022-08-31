@@ -24,25 +24,28 @@ export class HomePage {
   ) {}
 
   async ionViewDidEnter(): Promise<void> {
-    if (!this.user) {
-      await this.loadCurrentUser();
-    }
+    await this.loadCurrentUser();
+
     if (!this.tasks$) {
       this.tasks$ = this.getAllTasksByUser.execute(this.user.uid);
     }
   }
 
   async loadCurrentUser() {
-    const loading = await this.loading.create({
-      message: 'Aguarde...',
-    });
-    loading.present();
-    try {
-      this.user = await this.currentUser.getCurrentUser();
-    } catch (error) {
-      console.error('Ocorreu um erro ao buscar os dados do usuário');
-    } finally {
-      loading.dismiss();
+    if (this.currentUser.hasUser()) {
+      this.user = this.currentUser.getCurrentUser();
+    } else {
+      const loading = await this.loading.create({
+        message: 'Aguarde...',
+      });
+      loading.present();
+      try {
+        this.user = await this.currentUser.loadCurrentUser();
+      } catch (error) {
+        console.error('Ocorreu um erro ao buscar os dados do usuário');
+      } finally {
+        loading.dismiss();
+      }
     }
   }
 

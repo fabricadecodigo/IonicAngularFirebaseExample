@@ -30,27 +30,27 @@ export class CurrentUserService {
     this.currentUser = undefined;
   }
 
-  getCurrentUser(): Promise<User> {
+  loadCurrentUser(): Promise<User> {
     return new Promise((resolve, reject) => {
-      if (this.currentUser) {
-        resolve(this.currentUser);
-      } else {
-        const subscribe = this.auth.authState.subscribe(async (user) => {
-          subscribe.unsubscribe();
-          if (user) {
-            const name = await this.userRepository.getName(user.uid);
+      const subscribe = this.auth.authState.subscribe(async (user) => {
+        subscribe.unsubscribe();
+        if (user) {
+          const name = await this.userRepository.getName(user.uid);
 
-            this.currentUser = {
-              uid: user.uid,
-              name,
-              email: user.email,
-            };
-            resolve(this.currentUser);
-          } else {
-            reject();
-          }
-        });
-      }
+          this.currentUser = {
+            uid: user.uid,
+            name,
+            email: user.email,
+          };
+          resolve(this.currentUser);
+        } else {
+          reject();
+        }
+      });
     });
+  }
+
+  getCurrentUser(): User {
+    return this.currentUser;
   }
 }

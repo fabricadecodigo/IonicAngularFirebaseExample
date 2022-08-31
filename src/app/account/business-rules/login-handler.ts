@@ -25,7 +25,20 @@ export class LoginHandler {
     });
     loading.present();
     try {
-      await this.login(email, password);
+      const authResponse = await this.auth.signInWithEmailAndPassword(
+        email,
+        password
+      );
+
+      if (authResponse.user) {
+        const name = await this.userRepository.getName(authResponse.user.uid);
+
+        this.currentUserService.setCurrentUser(
+          authResponse.user.uid,
+          name,
+          email
+        );
+      }
 
       await this.toast.showSuccess('Login efetuado com sucesso');
       this.router.navigate(['/']);
@@ -33,23 +46,6 @@ export class LoginHandler {
       await this.toast.showError('Usuário/senha inválido(s)');
     } finally {
       loading.dismiss();
-    }
-  }
-
-  private async login(email: string, password: string) {
-    const authResponse = await this.auth.signInWithEmailAndPassword(
-      email,
-      password
-    );
-
-    if (authResponse.user) {
-      const name = await this.userRepository.getName(authResponse.user.uid);
-
-      this.currentUserService.setCurrentUser(
-        authResponse.user.uid,
-        name,
-        email
-      );
     }
   }
 }

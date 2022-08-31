@@ -26,7 +26,20 @@ export class CreateAccountHandler {
     loading.present();
 
     try {
-      this.createAccount(name, email, password);
+      const authResponse = await this.auth.createUserWithEmailAndPassword(
+        email,
+        password
+      );
+
+      if (authResponse.user) {
+        await this.userRespository.update(authResponse.user.uid, name);
+      }
+
+      this.currentUserService.setCurrentUser(
+        authResponse.user.uid,
+        name,
+        email
+      );
 
       await this.toast.showSuccess('Conta criada com sucesso');
       this.router.navigate(['/login']);
@@ -35,18 +48,5 @@ export class CreateAccountHandler {
     } finally {
       loading.dismiss();
     }
-  }
-
-  private async createAccount(name: string, email: string, password: string) {
-    const authResponse = await this.auth.createUserWithEmailAndPassword(
-      email,
-      password
-    );
-
-    if (authResponse.user) {
-      await this.userRespository.update(authResponse.user.uid, name);
-    }
-
-    this.currentUserService.setCurrentUser(authResponse.user.uid, name, email);
   }
 }
