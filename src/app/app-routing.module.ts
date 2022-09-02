@@ -26,20 +26,13 @@ const routes: Routes = [
     data: { authGuardPipe: redirectUnauthorizedToLogin },
     children: [
       {
-        path: '',
-        loadChildren: () =>
-          import('./tasks/pages/task-list/task-list.module').then(
-            (m) => m.TaskListPageModule
-          ),
-        canActivate: [AngularFireAuthGuard],
-        data: { authGuardPipe: redirectUnauthorizedToLogin },
-      },
-      {
         path: 'new',
         loadChildren: () =>
           import('./tasks/pages/task-edit/task-edit.module').then(
             (m) => m.TaskEditPageModule
           ),
+        canActivate: [AngularFireAuthGuard],
+        data: { authGuardPipe: redirectUnauthorizedToLogin },
       },
       {
         path: 'edit/:id',
@@ -47,6 +40,17 @@ const routes: Routes = [
           import('./tasks/pages/task-edit/task-edit.module').then(
             (m) => m.TaskEditPageModule
           ),
+        canActivate: [AngularFireAuthGuard],
+        data: { authGuardPipe: redirectUnauthorizedToLogin },
+      },
+      {
+        path: '',
+        loadChildren: () =>
+          import('./tasks/pages/task-list/task-list.module').then(
+            (m) => m.TaskListPageModule
+          ),
+        canActivate: [AngularFireAuthGuard],
+        data: { authGuardPipe: redirectUnauthorizedToLogin },
       },
     ],
   },

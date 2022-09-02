@@ -18,7 +18,7 @@ export class SaveTaskHandler {
 
   async execute(task: Task) {
     try {
-      const currentUser = this.currentUserService.getCurrentUser();
+      const currentUser = await this.currentUserService.loadCurrentUser();
       task.user = currentUser.uid;
 
       if (task.id) {
