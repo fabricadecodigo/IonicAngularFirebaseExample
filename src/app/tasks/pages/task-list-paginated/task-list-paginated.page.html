@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Tarefas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-list>
+    <ion-item *ngFor="let task of tasks$ | async">
+      <ion-label routerLink="/tasks/edit/{{ task.id }}">
+        <h2>{{task.title}}</h2>
+        <p>{{task.description}}</p>
+        <ion-text *ngIf="task.done" color="success">Completa</ion-text>
+        <ion-text *ngIf="!task.done" color="danger">Pendente</ion-text>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-infinite-scroll threshold="100px" (ionInfinite)="loadData()">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Aguarde..."
+    >
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>

@@ -44,6 +44,15 @@ const routes: Routes = [
         data: { authGuardPipe: redirectUnauthorizedToLogin },
       },
       {
+        path: 'paginated',
+        loadChildren: () =>
+          import(
+            './tasks/pages/task-list-paginated/task-list-paginated.module'
+          ).then((m) => m.TaskListPaginatedPageModule),
+        canActivate: [AngularFireAuthGuard],
+        data: { authGuardPipe: redirectUnauthorizedToLogin },
+      },
+      {
         path: '',
         loadChildren: () =>
           import('./tasks/pages/task-list/task-list.module').then(

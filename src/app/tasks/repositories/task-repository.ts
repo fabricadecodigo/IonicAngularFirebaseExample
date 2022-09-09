@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { Observable } from 'rxjs';
-import { map, retry } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Task } from '../models/task';
 
 @Injectable({
@@ -14,7 +14,9 @@ export class TaskRepository {
 
   getAll(user: string): Observable<Task[]> {
     const response = this.db
-      .collection<Task>(this.collectionName, (q) => q.where('user', '==', user).orderBy('title'))
+      .collection<Task>(this.collectionName, (q) =>
+        q.where('user', '==', user).orderBy('title')
+      )
       .snapshotChanges()
       .pipe(
         map((actions) =>

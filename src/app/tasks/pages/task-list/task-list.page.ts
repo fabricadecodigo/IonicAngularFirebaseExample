@@ -6,6 +6,7 @@ import { CurrentUserService } from '../../../account/business-rules/current-user
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Task } from '../../models/task';
+import { SaveTaskHandler } from '../../business-rules/save-task-handler';
 
 @Component({
   selector: 'app-home',
@@ -20,6 +21,7 @@ export class TaskListPage {
     private loading: LoadingController,
     private currentUser: CurrentUserService,
     private getAllTasksByUser: GetAllTasksByUserHandler,
+    private saveTaskHandler: SaveTaskHandler,
     private logoutHandler: LogoutHandler
   ) {}
 
@@ -51,5 +53,9 @@ export class TaskListPage {
 
   async logout() {
     this.logoutHandler.execute();
+  }
+
+  async onAddTasksClicked() {
+    await this.saveTaskHandler.executeInBatch();
   }
 }
