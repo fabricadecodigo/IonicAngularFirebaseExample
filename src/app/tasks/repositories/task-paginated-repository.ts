@@ -69,6 +69,7 @@ export class TaskPaginatedRepository {
     const hasItems = items.length > 0;
     if (hasItems) {
       this.lastItem = items[items.length - 1].payload.doc;
+      // transforma o que veio do firebase para uma interface controlada
       this.mapToTable(items);
       if (items.length < this.page) {
         this.disableNext.next(true);
