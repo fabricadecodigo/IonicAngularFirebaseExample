@@ -9,7 +9,7 @@ import { Injectable } from '@angular/core';
 export class GetAllTasksByUserHandler {
   constructor(private taskRepository: TaskRepository) {}
 
-  execute(user: string): Observable<Task[]> {
-    return this.taskRepository.getAll(user);
+  execute(user: string, done: boolean): Observable<Task[]> {
+    return this.taskRepository.getAll(user, done);
   }
 }

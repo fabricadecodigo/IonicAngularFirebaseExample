@@ -16,6 +16,7 @@ import { SaveTaskHandler } from '../../business-rules/save-task-handler';
 export class TaskListPage {
   user: User;
   tasks$: Observable<Task[]>;
+  tasksCompleted$: Observable<Task[]>;
 
   constructor(
     private loading: LoadingController,
@@ -29,7 +30,14 @@ export class TaskListPage {
     await this.loadCurrentUser();
 
     if (!this.tasks$) {
-      this.tasks$ = this.getAllTasksByUser.execute(this.user.uid);
+      this.tasks$ = this.getAllTasksByUser.execute(this.user.uid, false);
+    }
+
+    if (!this.tasksCompleted$) {
+      this.tasksCompleted$ = this.getAllTasksByUser.execute(
+        this.user.uid,
+        true
+      );
     }
   }
 

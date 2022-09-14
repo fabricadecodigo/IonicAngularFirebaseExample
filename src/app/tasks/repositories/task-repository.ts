@@ -12,10 +12,10 @@ export class TaskRepository {
 
   constructor(private db: AngularFirestore) {}
 
-  getAll(user: string): Observable<Task[]> {
+  getAll(user: string, done: boolean): Observable<Task[]> {
     const response = this.db
       .collection<Task>(this.collectionName, (q) =>
-        q.where('user', '==', user).orderBy('title')
+        q.where('user', '==', user).where('done', '==', done).orderBy('title')
       )
       .snapshotChanges()
       .pipe(
