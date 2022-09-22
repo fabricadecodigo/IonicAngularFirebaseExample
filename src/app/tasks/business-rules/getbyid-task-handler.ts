@@ -14,7 +14,7 @@ export class GetByIdTaskHandler {
 
   async execute(id: string): Promise<Task> {
     try {
-      const task = this.taskRepository.getById(id);
+      const task = await this.taskRepository.getById(id);
       return task;
     } catch (error) {
       await this.toast.showError('Erro ao buscar uma tarefa');
